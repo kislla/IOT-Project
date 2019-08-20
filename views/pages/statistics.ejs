@@ -1,0 +1,156 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/utils.js"></script>
+</head>
+<body class="container">
+
+<header>
+    <% include ../partials/header %>
+</header>
+
+<main>
+Limit:
+<input type="number" id="limit" value=20>
+
+<div style="width: 75%">
+    <canvas id="myChart"></canvas>
+</div>
+
+<br><hr><br>
+
+Date from:
+<input type="date" id="from">
+
+Date to:
+<input type="date" id="to">
+
+<input type="button" value="Go" id="go" onclick="go_click()" >
+<script>
+
+	var title_text = "<%= title_text %>";    
+	var labels = <%- JSON.stringify(labels) %>; 
+
+	var dataset1_title = "<%= dataset1_title %>";
+	var dataset1_data = <%- JSON.stringify(dataset1_data) %>; 
+	var dataset2_title = "<%= dataset2_title %>";
+	var dataset2_data = <%- JSON.stringify(dataset2_data) %>; 
+	var dataset3_title = "<%= dataset3_title %>";
+	var dataset3_data = <%- JSON.stringify(dataset3_data) %>; 
+	var dataset4_title = "<%= dataset4_title %>";
+	var dataset4_data = <%- JSON.stringify(dataset4_data) %>; 
+
+
+
+	let myChart = document.getElementById('myChart').getContext('2d');
+    // Global Options
+    //Chart.defaults.global.defaultFontFamily = 'Lato';
+    //Chart.defaults.global.defaultFontSize = 18;
+    //Chart.defaults.global.defaultFontColor = '#777';
+
+    let massPopChart = new Chart(myChart, {
+        type:'line', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+        data:{
+        labels: labels,
+        datasets:[
+            {label: dataset1_title,
+            data: dataset1_data,
+                borderColor: 'rgb(255, 99, 132)',
+
+                borderWidth:3,
+                hoverBorderWidth:4},
+
+            {label: dataset2_title,
+            data: dataset2_data,
+                borderColor: 'rgb(255, 159, 64)',
+    
+                borderWidth:3,
+                hoverBorderWidth:4},
+
+            {label: dataset3_title,
+            data: dataset3_data,
+                borderColor: 'rgb(75, 192, 192)',
+
+                borderWidth:3,
+                hoverBorderWidth:4},
+
+            {label: dataset4_title,
+            data: dataset4_data,
+                borderColor: 'rgb(54, 162, 235)',
+
+                borderWidth:3,
+                hoverBorderWidth:4}
+       ]
+        },
+        options:{
+			title:{
+				display:true,
+				text: title_text,
+				fontSize:25
+			},
+			legend:{
+				display:true,
+				position:'right',
+				labels:{
+					fontColor:'#000'
+				}
+			},scales: {
+				yAxes: [{
+					scaleLabel: {
+						display: true,
+						labelString: 'Sensor Value'
+					}
+				}],
+				xAxes: [{
+					scaleLabel: {
+						display: true,
+						labelString: "timestamp"
+					}
+				}]
+			}  
+        }
+    });
+
+
+    function go_click() {
+        var from = document.getElementById('from').value
+        var to = document.getElementById('to').value
+        var limit = document.getElementById('limit').value
+        
+        window.location = "/statistics?from="+from+"&to="+to+"&limit="+limit;
+    }
+
+    function getUrlParameter(parameter) {
+        parameter = parameter.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?|&]' + parameter.toLowerCase() + '=([^&#]*)');
+        var results = regex.exec('?' + document.documentURI.toLowerCase().split('?')[1]);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    window.onload = function() {
+        var uri_from = getUrlParameter('from')
+        var uri_to = getUrlParameter('to')
+        var uri_limit = getUrlParameter('limit')
+
+        document.getElementById('from').value = uri_from
+        document.getElementById('to').value = uri_to
+        document.getElementById('limit').value = uri_limit
+
+        // console.log("uri_from = " + uri_from)
+        // console.log("uri_to = " + uri_to)
+
+
+    };
+    </script>
+</main>
+
+<footer>
+    <% include ../partials/footer %>
+</footer>
+
+</body>
+</html> 
